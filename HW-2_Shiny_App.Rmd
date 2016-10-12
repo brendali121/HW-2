@@ -1,6 +1,6 @@
 ---
 title: "MATH 216 Homework 2 Shiny App"
-author: "WRITE YOUR NAME HERE"
+author: "Brenda Li"
 output: html_document
 runtime: shiny
 ---
@@ -21,27 +21,18 @@ You can embed Shiny inputs and outputs in your document. Outputs are automatical
 ```{r eruptions, echo=FALSE}
 inputPanel(
   
-  # Input name
-  textInput("name", label = "Enter Name:", value="Jane"),
-  # Input start year
-  numericInput("start_year", label = "Start Year:", value = 1880, min = 1880, max = 2014, step = 1),
-  # Input end year
-  numericInput("end_year", label = "End Year:", value = 2014, min = 1880, max = 2014, step = 1)
+  radioButtons("Comedy", label = "Comedy?",choices=c("Yes","No"))
   
 )
 
 renderPlot({
   
-  # Pretend Inputs
-  input_name <- "Albert"
-  input_start_year <- 1880
-  input_end_year <- 2014
+  movies1<- filter(movies,!is.na(budget)) %>% 
+    mutate(Com=ifelse(Comedy==1,TRUE,FALSE))
   
-  # Generate Plots
-  names <- babynames %>%
-    filter(name == input$name & year >= input$start_year & year <= input$end_year )
-  ggplot(data=names, aes(x=year, y=prop, col=sex)) + 
-    geom_line()
+  fake<-input$Comedy=="Yes"
+  ggplot(data=filter(movies1,Com==fake),aes(x=budget,y=rating))+geom_point()
+  
   
 })
 ```

@@ -1,6 +1,6 @@
 ---
 title: "MATH 216 Homework 2"
-author: "WRITE YOUR NAME HERE"
+author: "Brenda Li"
 output:
   html_document:
     toc: true
@@ -20,6 +20,10 @@ library(readr)
 # Do not edit this code block. By setting cache=TRUE, we are saving the output 
 # of this block to the cache. That way it only needs to run once.  This is
 # especially useful for portions of code that take a long time to run.
+url <- "https://github.com/rudeboybert/JSE_OkCupid/blob/master/profiles.csv.zip?raw=true"
+temp_zip_file <- tempfile()
+download.file(url, temp_zip_file)
+unzip(temp_zip_file, "profiles.csv")
 profiles <- read_csv(file="profiles.csv")
 ```
 
@@ -30,9 +34,9 @@ profiles <- read_csv(file="profiles.csv")
 Please indicate
 
 * Who you collaborated with:
-* Roughly how much time you spent on this HW so far:
-* The URL of the RPubs published URL [here](https://www.nhl.com/).
-* What gave you the most trouble:
+* Roughly how much time you spent on this HW so far: 1.5 Hour
+* The URL of the RPubs published URL [here](http://rpubs.com/brendali121/HW2).
+* What gave you the most trouble: In terms of EDA, deciding how I wanted to interpret the data, and deciding whether to exclude certain data points.
 * Any comments you have:
 
 
@@ -50,10 +54,49 @@ all keeping in mind in HW-3, you will be fitting a logistic regression to
 predict a user's gender based on these variables.
 
 ```{r, echo=TRUE, message=TRUE, warning=TRUE, fig.width=8, fig.height=4.5}
+clean<-filter(profiles,income!=-1) %>% 
+  filter(!is.na(job))
+
+ggplot(data=clean,aes(x=sex,y=income))+geom_boxplot()+labs(title="Income by Gender",x="Gender",y="Income")
+
+filtered<-filter(clean,income<250000) 
+ggplot(data=filtered,aes(x=sex,y=income))+geom_boxplot()+labs(title="Income by Gender", x="Gender", y="Income")
+
+p<-clean %>% 
+  group_by(sex,job) %>% 
+  summarise(n=n()) %>%
+  ggplot(aes(x=job,y=n,fill=sex))+geom_bar(stat="identity",position="dodge")
+p<- p+theme(axis.text.x = element_text(angle = 60, hjust = 1))
+p<-p+labs(title="Jobs by Gender", x="Job Field",y="Frequency")
+p
+
+total<-clean %>% group_by(sex) %>%summarise(n=n()) %>% rename(total=n)
+
+jobfrq<-clean %>% 
+  group_by(sex,job) %>% 
+  summarise(n=n()) %>%
+  rename(freq_job=n)
+
+prop<-left_join(jobfrq,total,by="sex")
+
+p1<-ggplot(data=prop,aes(x=job, y=freq_job/total,fill=sex))+geom_bar(stat="identity",position="dodge")
+p1<- p1+theme(axis.text.x = element_text(angle = 60, hjust = 1))
+p1<-p1+labs(title="Proportion of Individuals Within Each Gender in Each Job Field", x="Job Field",y="Proportion")
+p1
+
+
 
 ```
 
+Income by Gender: 
+We can see from the first set of boxplots that the first quartile, median, and third quartile of income is lower for women than for men.  
 
+However, for both genders, there are significant outliers in the dataset, with incomes up to 1000000, which may be of questionable validity since individuals with such high incomes don't seem to me like the individuals that would need to go on OkCupid.  Thus, I generated a second set of boxplots with individuals with these outliers excluded.
+
+Job by Gender: 
+We can see from the first bar graph that for all fields except "clerical/administrative", the number of males in the field was higher than the number of females.  However, this is probably due to the fact that there are a lot more men than women in the dataset.  
+
+Therefore, in the second bar graph, we look at the proportion of individuals within each gender that listed each job field.  In other words, a bit more than 10% of the women in the data set listed "artistic/musical/writer" as their job, while about 8% of the men in the data set listed that same job.  From the second plot, we see that there are certain fields with a greater percentage of females than males relative to the total number of females and males (<-don't know if I articulated that correctly) 
 
 ## Question 2:
 
