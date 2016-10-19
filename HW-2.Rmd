@@ -29,11 +29,11 @@ profiles <- read_csv(file="profiles.csv")
 
 Please indicate
 
-* Who you collaborated with:
-* Roughly how much time you spent on this HW so far: 1.5 Hour
+* Who you collaborated with: Bianca G. 
+* Roughly how much time you spent on this HW so far: 3 Hour
 * The URL of the RPubs published URL [here](http://rpubs.com/brendali121/HW2).
-* What gave you the most trouble: In terms of EDA, deciding how I wanted to interpret the data, and deciding whether to exclude certain data points.
-* Any comments you have:
+* What gave you the most trouble:
+* Any comments you have: I think I implemented the changes we talked about, but I'm still not sure I'm conditioning in terms of the right variable in order to predict gender.
 
 
 
