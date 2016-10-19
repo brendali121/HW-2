@@ -31,7 +31,8 @@ renderPlot({
     mutate(Com=ifelse(Comedy==1,TRUE,FALSE))
   
   fake<-input$Comedy=="Yes"
-  ggplot(data=filter(movies1,Com==fake),aes(x=budget,y=rating))+geom_point()
+  
+  ggplot(data=filter(movies1,Com==fake),aes(x=budget,y=rating))+geom_point()+scale_x_log10()+labs(title="Movie Rating by Budget", x="log10(Budget)",y="Rating")
   
   
 })
